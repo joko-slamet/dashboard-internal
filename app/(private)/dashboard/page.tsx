@@ -5,6 +5,11 @@ import axios from "axios";
 import { getCookie } from "cookies-next";
 import { useQuery } from "@tanstack/react-query";
 import { Spinner } from "@material-tailwind/react";
+import { data } from "./constant";
+import { Chip } from "@material-tailwind/react";
+import { dateFormatter } from "@/lib/function/formatter";
+import { StatusDropdown } from "./(components)/StatusDropdown";
+import ExpandableText from "./(components)/ExpandableText";
 
 type Bug = {
   id: number;
@@ -21,25 +26,26 @@ const api = axios.create({
 
 export default function DashboardPage() {
   const token = getCookie("token");
-
-  const { data, isLoading, isError } = useQuery({
-    queryKey: ["bugs"],
-    queryFn: async (): Promise<Bug[]> => {
-      const res = await api.get("/bugs", {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      return res.data;
-    },
-    retry: false,
-  });
+  const isLoading = false;
+  const isError = false;
+  // const { data, isLoading, isError } = useQuery({
+  //   queryKey: ["bugs"],
+  //   queryFn: async (): Promise<Bug[]> => {
+  //     const res = await api.get("/bugs", {
+  //       headers: { Authorization: `Bearer ${token}` },
+  //     });
+  //     return res.data;
+  //   },
+  //   retry: false,
+  // });
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case "Open":
+      case "todo":
         return "text-red-400 bg-red-500/10 border border-red-400/30";
-      case "In Progress":
+      case "on_progress":
         return "text-yellow-400 bg-yellow-500/10 border border-yellow-400/30";
-      case "Closed":
+      case "finish":
         return "text-green-400 bg-green-500/10 border border-green-400/30";
       default:
         return "text-gray-300 bg-gray-700/50";
@@ -77,10 +83,10 @@ export default function DashboardPage() {
               <thead>
                 <tr className="border-b border-gray-700 text-left text-gray-300">
                   <th className="p-3 font-medium">ID</th>
-                  <th className="p-3 font-medium">Title</th>
+                  <th className="p-3 font-medium">Complain Report</th>
+                  <th className="p-3 font-medium">Category</th>
                   <th className="p-3 font-medium">Status</th>
-                  <th className="p-3 font-medium">Assigned To</th>
-                  <th className="p-3 font-medium">Last Updated</th>
+                  <th className="p-3 font-medium">Created At</th>
                 </tr>
               </thead>
               <tbody>
@@ -92,19 +98,35 @@ export default function DashboardPage() {
                         idx % 2 === 0 ? "bg-[#1e293b]" : "bg-[#273449]"
                       } hover:bg-[#334155] transition-colors`}
                     >
-                      <td className="p-3 text-white">{item.id}</td>
-                      <td className="p-3 text-white">{item.title}</td>
-                      <td className="p-3">
-                        <span
-                          className={`px-2 py-1 rounded-md text-sm font-medium ${getStatusColor(
-                            item.status
-                          )}`}
-                        >
-                          {item.status}
+                      <td className="px-3 text-white">{item.id}</td>
+                      <td className="px-3">
+                        <ExpandableText text={item.message_text} />
+                      </td>
+                      <td className="p-3 text-white uppercase">
+                        <span className="rounded-full bg-blue-400 px-2 py-1 font-bold text-sm">
+                          {item.category}
                         </span>
                       </td>
-                      <td className="p-3">{item.assignedTo}</td>
-                      <td className="p-3 text-gray-400">{item.updated}</td>
+                      {/* STATUS — editable */}
+                      {/* Custom Select */}
+                      <td className="p-3">
+                        <StatusDropdown
+                          current={item.status}
+                          onChange={(status) => {
+                            console.log(
+                              `Change status of bug ID ${item.id} to ${status}`
+                            );
+                          }}
+                          // onChange={(status) =>
+                          //   mutation.mutate({ id: item.id, status })
+                          // }
+                          // disabled={mutation.isPending}
+                        />
+                      </td>
+
+                      <td className="p-3 text-white">
+                        {dateFormatter(item.created_at)}
+                      </td>
                     </tr>
                   ))
                 ) : (
