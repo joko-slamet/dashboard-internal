@@ -65,7 +65,7 @@ export default function LoginPage() {
       >
         <div className="text-center mb-8">
           <h1 className="text-2xl font-semibold text-gray-800 dark:text-gray-100">
-            🧠 IT Bug Tracker
+            💬 IT Helpdesk System
           </h1>
           <p className="text-gray-500 dark:text-gray-400 text-sm mt-1">
             Dashboard Internal Tim IT

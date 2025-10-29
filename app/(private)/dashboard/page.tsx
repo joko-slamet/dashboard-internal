@@ -10,6 +10,7 @@ import { Chip } from "@material-tailwind/react";
 import { dateFormatter } from "@/lib/function/formatter";
 import { StatusDropdown } from "./(components)/StatusDropdown";
 import ExpandableText from "./(components)/ExpandableText";
+import { ScopeDropdown } from "./(components)/ScopeDropdown";
 
 type Bug = {
   id: number;
@@ -84,6 +85,7 @@ export default function DashboardPage() {
                 <tr className="border-b border-gray-700 text-left text-gray-300">
                   <th className="p-3 font-medium">ID</th>
                   <th className="p-3 font-medium">Complain Report</th>
+                  <th className="p-3 font-medium">Error Source</th>
                   <th className="p-3 font-medium">Category</th>
                   <th className="p-3 font-medium">Status</th>
                   <th className="p-3 font-medium">Created At</th>
@@ -101,6 +103,20 @@ export default function DashboardPage() {
                       <td className="px-3 text-white">{item.id}</td>
                       <td className="px-3">
                         <ExpandableText text={item.message_text} />
+                      </td>
+                      <td className="p-3">
+                        <ScopeDropdown
+                          current={item.status}
+                          onChange={(status) => {
+                            console.log(
+                              `Change status of bug ID ${item.id} to ${status}`
+                            );
+                          }}
+                          // onChange={(status) =>
+                          //   mutation.mutate({ id: item.id, status })
+                          // }
+                          // disabled={mutation.isPending}
+                        />
                       </td>
                       <td className="p-3 text-white uppercase">
                         <span className="rounded-full bg-blue-400 px-2 py-1 font-bold text-sm">
