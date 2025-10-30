@@ -4,10 +4,8 @@ import { motion } from "framer-motion";
 import Link from "next/link";
 import { Button, Card, CardBody, Typography } from "@material-tailwind/react";
 import { FiMessageSquare, FiClock, FiUsers, FiLogIn } from "react-icons/fi";
-import { getCookie } from "cookies-next";
 
 export default function LandingPage() {
-  const isLogin = getCookie("token-ticketing");
   return (
     <div className="min-h-screen bg-[#0f172a] text-gray-100 flex flex-col">
       {/* HEADER */}
@@ -40,8 +38,8 @@ export default function LandingPage() {
               size="lg"
               className="flex items-center gap-2 px-6 py-3 text-sm font-semibold cursor-pointer"
             >
-              <FiLogIn className="h-4 w-4" />{" "}
-              {isLogin ? "Go to Dashboard" : "Login"}
+              <FiLogIn className="h-4 w-4" />
+              Login
             </Button>
           </Link>
         </motion.div>

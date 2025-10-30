@@ -7,7 +7,6 @@ import axios, { isAxiosError } from "axios";
 import { FiLogIn } from "react-icons/fi";
 import { Spinner } from "@material-tailwind/react";
 import { motion } from "framer-motion";
-import { setCookie } from "cookies-next";
 
 type LoginForm = {
   email: string;
@@ -16,6 +15,7 @@ type LoginForm = {
 
 const api = axios.create({
   baseURL: process.env.NEXT_PUBLIC_URL_API,
+  withCredentials: true,
   headers: {
     "Content-Type": "application/json",
   },
@@ -35,16 +35,11 @@ export default function LoginPage() {
     setLoading(true);
     setErrorMsg("");
     try {
-      const res = await api.post("/api/login", data);
-      const token = res.data?.token;
-      if (token) {
-        // ✅ simpan token di cookie, expired 1 hari
-        setCookie("token", token);
+      await api.post("/auth/login", data).then(() => {
         router.push("/dashboard");
-      } else {
-        setErrorMsg("Token tidak ditemukan dalam respons server.");
-      }
+      });
     } catch (error) {
+      console.log(error);
       if (isAxiosError(error))
         setErrorMsg(
           error.response?.data?.message || "Email atau password salah"
@@ -131,7 +126,7 @@ export default function LoginPage() {
             type="submit"
             disabled={loading}
             className="w-full flex items-center justify-center gap-2 py-2.5 mt-2 text-sm font-medium rounded-lg
-              bg-blue-600 hover:bg-blue-700 text-white transition-all duration-200 disabled:opacity-70"
+              bg-blue-600 hover:bg-blue-700 text-white transition-all duration-200 disabled:opacity-70 cursor-pointer"
           >
             {loading ? (
               <Spinner className="h-4 w-4" />
